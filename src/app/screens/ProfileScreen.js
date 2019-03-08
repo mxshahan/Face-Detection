@@ -19,8 +19,10 @@ export default class ProfileScreen extends React.Component {
         countDownSeconds: 5, //current available seconds before photo is taken
         countDownStarted: false, //starts when face detected
         pictureTaken: false, //true when photo has been taken
-        motion: null, //captures the device motion object 
+        motion: null, //captures the device motion object
         detectMotion: false, //when true we attempt to determine if device is still
+        rSize: {}, // face marker rangle size
+        rOrigin: {}, // face marker cordinate
     };
 
     countDownTimer = null;
@@ -81,7 +83,7 @@ export default class ProfileScreen extends React.Component {
 
 
     render() {
-        const { hasCameraPermission } = this.state;
+        const { hasCameraPermission, rSize, rOrigin } = this.state;
         if (hasCameraPermission === null) {
             return <View />;
         } else if (hasCameraPermission === false) {
@@ -96,8 +98,8 @@ export default class ProfileScreen extends React.Component {
                         onFaceDetectionError={this.handleFaceDetectionError}
                         faceDetectorSettings={{
                             mode: FaceDetector.Constants.Mode.accurate,
-                            detectLandmarks: FaceDetector.Constants.Mode.none,
-                            runClassifications: FaceDetector.Constants.Mode.none,
+                            detectLandmarks: FaceDetector.Constants.Mode.all,
+                            runClassifications: FaceDetector.Constants.Mode.all,
                         }}
                         ref={ref => {
                             this.camera = ref;
@@ -131,15 +133,17 @@ export default class ProfileScreen extends React.Component {
                                 style={styles.countdown}
                             >Picture Taken</Text>
                             :
-                                <Text style={{
-                                    width: 100,
-                                    height: 100,
-                                    backgroundColor: '#f01',
+                                rSize.width &&<Text style={{
+                                    width: rSize.width-20,
+                                    height: rSize.height-20,
+                                    display: 'flex',
+                                    backgroundColor: 'transparent',
                                     position: 'absolute',
-                                    top: 0,
-                                    left: 0,
-                                    right: 0
-                                }}>Hello</Text>
+                                    top: rOrigin.x,
+                                    left: rOrigin.y,
+                                    borderColor: 'blue',
+                                    borderWidth: 1
+                                }}></Text>
                             }
                         </View>
                     </Camera>
@@ -157,10 +161,11 @@ export default class ProfileScreen extends React.Component {
         //
     }
     handleFacesDetected = ({ faces, ...rest }) => {
+        console.log(rest)
         faces.map((face) => {
-            console.log(face)
             this.setState({
-                rSize: face.bounds.size
+                rSize: face.bounds.size,
+                rOrigin: face.bounds.origin
             })
         })
         if (faces.length >= 1) {

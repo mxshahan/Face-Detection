@@ -1,13 +1,13 @@
 import React from 'react';
-import { 
-    createAppContainer, 
-    createStackNavigator, 
-    createBottomTabNavigator, 
+import {
+    createAppContainer,
+    createStackNavigator,
+    createBottomTabNavigator,
     createDrawerNavigator,
     createSwitchNavigator
 } from "react-navigation";
 import { StyleSheet } from 'react-native'
-import { HomeScreen, ProfileScreen, StarterScreen } from '../screens';
+import { HomeScreen, ProfileScreen, StarterScreen, SnapScreen, ViewScreen } from '../screens';
 import { Icon } from 'react-native-elements'
 import { color } from '../../constants/colors'
 
@@ -28,11 +28,11 @@ const HomeStackNavigation = createStackNavigator({
             headerStyle: {
                 backgroundColor: color.red
             },
-            // headerLeft: () => <Icon 
-            //     name="menu" 
-            //     size={30} 
-            //     color={color.textPrimary} 
-            //     onPress={() => navigation.navigate('DrawerOpen')} 
+            // headerLeft: () => <Icon
+            //     name="menu"
+            //     size={30}
+            //     color={color.textPrimary}
+            //     onPress={() => navigation.navigate('DrawerOpen')}
             //     iconStyle={styles.menuLeft}
             // />,
             headerTintColor: color.textPrimary,
@@ -53,6 +53,32 @@ const HomeStackNavigation = createStackNavigator({
                 fontWeight: 'bold',
             }
         })
+    },
+    Snap: {
+        screen: SnapScreen,
+        navigationOptions: () => ({
+            title: "Snap Photo",
+            headerStyle: {
+                backgroundColor: color.red
+            },
+            headerTintColor: color.textPrimary,
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            }
+        })
+    },
+    View: {
+        screen: ViewScreen,
+        navigationOptions: () => ({
+            title: "View Photo",
+            headerStyle: {
+                backgroundColor: color.red
+            },
+            headerTintColor: color.textPrimary,
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            }
+        })
     }
 })
 
@@ -63,4 +89,3 @@ const RootSwitch = createSwitchNavigator(
 );
 
 export const MainNavigation = createAppContainer(RootSwitch);
-

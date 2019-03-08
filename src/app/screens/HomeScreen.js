@@ -19,7 +19,7 @@ class HomeScreen extends React.Component {
     }
 
     _onPressUpload = () => {
-
+        this.props.navigation.navigate('Snap')
     }
 
     _onPressCapture = () => this.props.navigation.navigate('Capture')
@@ -82,14 +82,14 @@ class HomeScreen extends React.Component {
                 </View> */}
 
 
-                {/* <View style={[styles.bodyContainer, styles.uploadBtn]}>
+                <View style={[styles.bodyContainer, styles.uploadBtn]}>
                     <View style={styles.uploadInner}>
                         <TouchableOpacity onPress={this._onPressUpload} >
                             <Ionicons name="md-images" size={30} color={color.red} />
                         </TouchableOpacity>
                     </View>
                 </View>
-                 */}
+
                 <View style={[styles.bodyContainer, styles.captureBtn]}>
                     <View style={styles.uploadInner}>
                         <TouchableOpacity onPress={this._onPressCapture} >
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
         margin: 10,
         position: 'absolute',
         bottom: 10,
-        right: 10 
+        right: 10
     },
     uploadInner: {
         backgroundColor: color.textPrimary,

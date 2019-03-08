@@ -1,7 +1,7 @@
 import React from 'react';
-import { 
-    StyleSheet, 
-    Text, 
+import {
+    StyleSheet,
+    Text,
     View,
     Image,
     ActivityIndicator
@@ -12,7 +12,7 @@ import { color } from '../../constants/colors';
 import { Font } from 'expo';
 
 class StarterScreen extends React.Component {
- 
+
     state = {
         fontLoaded: false
     }
@@ -20,7 +20,7 @@ class StarterScreen extends React.Component {
         await Font.loadAsync({
             'TitilliumWeb': require('./fonts/TitilliumWeb-Light.ttf')
         })
-        
+
         this.props.navigation.navigate('Home', {fontLoaded: true})
     }
     render() {
