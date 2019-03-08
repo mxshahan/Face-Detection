@@ -2,31 +2,31 @@
   "expo": {
     "name": "Face Detection",
     "slug": "face-detection",
-    "description": "A Simple Face Detection App",
     "privacy": "public",
     "sdkVersion": "32.0.0",
     "platforms": [
       "ios",
       "android"
     ],
+    "android": {
+      "package": "com.example.face.detection.app"
+    },
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/logo.png",
+    "icon": "./src/assets/icon.png",
     "splash": {
-      "image": "./src/assets/splash.png",
+      "image": "./src/assets/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FA2A49"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "primaryColor": "#000000",
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true
-    },
-    "appKey": "androidShowExponentNotificationInShellApp"
+    }
   }
 }

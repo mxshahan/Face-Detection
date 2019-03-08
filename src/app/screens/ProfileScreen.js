@@ -1,6 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera, Permissions, FaceDetector, DangerZone } from 'expo';
+import { color } from '../../constants/colors';
+import { Ionicons } from '@expo/vector-icons';
 
 export default class ProfileScreen extends React.Component {
     static defaultProps = {
@@ -25,7 +27,7 @@ export default class ProfileScreen extends React.Component {
 
     async componentWillMount() {
         const { status } = await Permissions.askAsync(Permissions.CAMERA);
-        this.setState({ hasCameraPermission: status === 'granted' });
+        if (status) this.setState({ hasCameraPermission: status === 'granted' });
     }
 
     componentDidMount() {
@@ -93,7 +95,7 @@ export default class ProfileScreen extends React.Component {
                         onFacesDetected={this.state.faceDetecting ? this.handleFacesDetected : undefined}
                         onFaceDetectionError={this.handleFaceDetectionError}
                         faceDetectorSettings={{
-                            mode: FaceDetector.Constants.Mode.fast,
+                            mode: FaceDetector.Constants.Mode.accurate,
                             detectLandmarks: FaceDetector.Constants.Mode.none,
                             runClassifications: FaceDetector.Constants.Mode.none,
                         }}
@@ -111,7 +113,7 @@ export default class ProfileScreen extends React.Component {
                             }}>
                             <Text
                                 style={styles.textStandard}>
-                                {this.state.faceDetected ? 'Face Detected' : 'No Face Detected'}
+                                {this.state.faceDetected ? this.state.faces + ' Face Detected' : 'No Face Detected'}
                             </Text>
                         </View>
                         <View
@@ -123,16 +125,29 @@ export default class ProfileScreen extends React.Component {
                                 height: '100%',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                display: this.state.faceDetected && !this.state.pictureTaken ? 'flex' : 'none',
+                                display: 'flex',
                             }}>
-                            <Text
+                            {this.state.pictureTaken ? <Text
                                 style={styles.countdown}
-                            >
-                                {this.state.countDownSeconds}
-                            </Text>
+                            >Picture Taken</Text>
+                            :
+                                <Text style={{
+                                    width: 100,
+                                    height: 100,
+                                    backgroundColor: '#f01',
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0
+                                }}>Hello</Text>
+                            }
                         </View>
-
                     </Camera>
+                    <View style={styles.captureBtn}>
+                        <TouchableOpacity onPress={this._onPressCapture} style={styles.captureBtnInner}>
+                            <Ionicons name="md-wifi" size={50} color={color.red} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
             );
         }
@@ -141,32 +156,40 @@ export default class ProfileScreen extends React.Component {
     handleFaceDetectionError = () => {
         //
     }
-    handleFacesDetected = ({ faces }) => {
-        if (faces.length === 1) {
+    handleFacesDetected = ({ faces, ...rest }) => {
+        faces.map((face) => {
+            console.log(face)
+            this.setState({
+                rSize: face.bounds.size
+            })
+        })
+        if (faces.length >= 1) {
             this.setState({
                 faceDetected: true,
+                faces: faces.length
             });
-            if (!this.state.faceDetected && !this.state.countDownStarted) {
-                this.initCountDown();
-            }
-        } else {
-            this.setState({ faceDetected: false });
-            this.cancelCountDown();
+            // if (!this.state.faceDetected && !this.state.countDownStarted) {
+            //     this.initCountDown();
+            // }
         }
+        // else {
+        //     this.setState({ faceDetected: false });
+        //     this.cancelCountDown();
+        // }
     }
-    initCountDown = () => {
-        this.setState({
-            countDownStarted: true,
-        });
-        this.countDownTimer = setInterval(this.handleCountDownTime, 1000);
-    }
-    cancelCountDown = () => {
-        clearInterval(this.countDownTimer);
-        this.setState({
-            countDownSeconds: this.props.countDownSeconds,
-            countDownStarted: false,
-        });
-    }
+    // initCountDown = () => {
+    //     this.setState({
+    //         countDownStarted: true,
+    //     });
+    //     this.countDownTimer = setInterval(this.handleCountDownTime, 1000);
+    // }
+    // cancelCountDown = () => {
+    //     clearInterval(this.countDownTimer);
+    //     this.setState({
+    //         countDownSeconds: this.props.countDownSeconds,
+    //         countDownStarted: false,
+    //     });
+    // }
     handleCountDownTime = () => {
         if (this.state.countDownSeconds > 0) {
             let newSeconds = this.state.countDownSeconds - 1;
@@ -178,17 +201,22 @@ export default class ProfileScreen extends React.Component {
             this.takePicture();
         }
     }
-    takePicture = () => {
+    takePicture = async () => {
         this.setState({
             pictureTaken: true,
         });
         if (this.camera) {
             console.log('take picture');
-            this.camera.takePictureAsync({ onPictureSaved: this.onPictureSaved });
+            let photo = await this.camera.takePictureAsync({ onPictureSaved: this.onPictureSaved });
+            console.log(photo)
         }
     }
     onPictureSaved = () => {
         this.detectFaces(false);
+    }
+
+    _onPressCapture = () => {
+        this.takePicture();
     }
 }
 
@@ -207,5 +235,23 @@ const styles = StyleSheet.create({
     countdown: {
         fontSize: 40,
         color: 'white'
+    },
+    captureBtn: {
+        position: 'absolute',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        bottom: 50,
+
+    },
+    captureBtnInner: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: "#fff",
+        width: 80,
+        height: 80,
+        borderRadius: 100
     }
 });
