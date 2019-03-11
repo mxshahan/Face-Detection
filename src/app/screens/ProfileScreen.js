@@ -161,7 +161,6 @@ export default class ProfileScreen extends React.Component {
         //
     }
     handleFacesDetected = ({ faces, ...rest }) => {
-        console.log(rest)
         faces.map((face) => {
             this.setState({
                 rSize: face.bounds.size,

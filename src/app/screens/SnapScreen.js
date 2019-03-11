@@ -17,6 +17,7 @@ export default class SnapScreen extends React.Component {
     };
 
     snap = async (recognize) => {
+        console.log(recognize)
         try {
             if (this.camera) {
                 let photo = await this.camera.takePictureAsync({ base64: true });
